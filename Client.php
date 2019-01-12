@@ -453,7 +453,7 @@ class oauthApi
 	**/
 	public function _buildtype($class,$fields)
 	{
-		$fields['realm'] = $fields['server'];
+		if (isset ($fields['server'])) $fields['realm'] = $fields['server'];
 		switch ($class)
 		{
 			/*
