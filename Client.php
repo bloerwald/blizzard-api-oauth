@@ -53,8 +53,6 @@ class oauthApi
     const GRANT_TYPE_CLIENT_CREDENTIALS = 'client_id';
     const GRANT_TYPE_REFRESH_TOKEN      = 'refresh_token';
 	const GRANT_TYPE_C_C 				= 'client_credentials';
-	
-	const INVALID_GRANT_TYPE			= 'bob';
 
     /**
      * HTTP Methods
@@ -244,8 +242,8 @@ class oauthApi
 		$this->locale			= $locale;
         $this->client_auth		= $client_auth;
 		$this->redirect_uri		= $r;
-		$bob = $this->getAccessToken($this->baseurl[$this->region]['TOKEN_ENDPOINT'], 'client_credentials',array());
-		$this->setAccessToken($bob['access_token']);
+
+		$this->setAccessToken ($this->getAccessToken (self::GRANT_TYPE_C_C)['access_token']);
 		$this->setAccessTokenType(1);
 	
     }
@@ -278,33 +276,34 @@ class oauthApi
     /**
      * getAuthenticationUrl
      *
-     * @param string $auth_endpoint Url of the authentication endpoint
-     * @param string $redirect_uri  Redirection URI
      * @param array  $extra_parameters  Array of extra parameters like scope or state (Ex: array('scope' => null, 'state' => ''))
      * @return string URL used for authentication
      */
-    public function getAuthenticationUrl($auth_endpoint, $redirect_uri, array $extra_parameters = array())
+    public function getAuthenticationUrl(array $extra_parameters = array())
     {
         $parameters = array_merge(array(
             'response_type' => 'code',
             'client_id'     => $this->client_id,
 			'scope'			=> 'wow.profile',
 			'auth_flow'		=> 'auth_code',
-            'redirect_uri'  => $redirect_uri
+            'redirect_uri'  => $this->redirect_uri
         ), $extra_parameters);
-        return $auth_endpoint . '?' . http_build_query($parameters, null, '&');
+        return $this->baseurl[$this->region]['AUTHORIZATION_ENDPOINT']
+            . '?' . http_build_query($parameters, null, '&');
     }
 
     /**
      * getAccessToken
      *
-     * @param string $token_endpoint    Url of the token endpoint
      * @param int    $grant_type        Grant Type ('authorization_code', 'password', 'client_credentials', 'refresh_token', or a custom code (@see GrantType Classes)
      * @param array  $parameters        Array sent to the server (depend on which grant type you're using)
      * @return array Array of parameters required by the grant_type (CF SPEC)
      */
-    public function getAccessToken($token_endpoint, $grant_type, array $parameters)
+    public function getAccessToken($grant_type, array $parameters = array())
     {
+        $token_endpoint = $this->baseurl[$this->region]['TOKEN_ENDPOINT'];
+        $parameters['redirect_uri'] = $this->redirect_uri;
+
         if (!$grant_type) {
             throw new InvalidArgumentException('The grant_type is mandatory.', InvalidArgumentException::INVALID_GRANT_TYPE);
         }
