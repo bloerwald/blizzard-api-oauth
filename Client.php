@@ -244,7 +244,7 @@ class oauthApi
 		$this->redirect_uri		= $r;
 
 		$this->setAccessToken ($this->getAccessToken (self::GRANT_TYPE_C_C)['access_token']);
-		$this->setAccessTokenType(1);
+		$this->setAccessTokenType (self::ACCESS_TOKEN_BEARER);
 	
     }
 
