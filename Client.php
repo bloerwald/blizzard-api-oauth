@@ -21,7 +21,7 @@
  * @author      Joe Foster (Ulminia) <ulminia@gmail.com>
 
  */
-namespace OAuth;
+namespace OAuth2;
 
 require_once( 'GrantType/IGrantType.php');
 require_once( 'GrantType/AuthorizationCode.php');
@@ -309,7 +309,7 @@ class oauthApi
             throw new InvalidArgumentException('The grant_type is mandatory.', InvalidArgumentException::INVALID_GRANT_TYPE);
         }
         $grantTypeClassName = $this->convertToCamelCase($grant_type);
-        $grantTypeClass =  __NAMESPACE__ . '' . $grantTypeClassName;
+        $grantTypeClass =  __NAMESPACE__ . '\\GrantType\\' . $grantTypeClassName;
         if (!class_exists($grantTypeClass)) {
             throw new InvalidArgumentException('Unknown grant type \'' . $grant_type . '\' ['.$grantTypeClass.']', InvalidArgumentException::INVALID_GRANT_TYPE);
         }
@@ -958,8 +958,8 @@ class oauthApi
         return implode('', $parts);
     }
 }
-/*
-class Exception extends Exception
+
+class Exception extends \Exception
 {
     const CURL_NOT_FOUND                     = 0x01;
     const CURL_ERROR                         = 0x02;
@@ -968,11 +968,10 @@ class Exception extends Exception
     const INVALID_ACCESS_TOKEN_TYPE          = 0x05;
 }
 
-class InvalidArgumentException extends InvalidArgumentException
+class InvalidArgumentException extends \InvalidArgumentException
 {
     const INVALID_GRANT_TYPE      = 0x01;
     const CERTIFICATE_NOT_FOUND   = 0x02;
     const REQUIRE_PARAMS_AS_ARRAY = 0x03;
     const MISSING_PARAMETER       = 0x04;
 }
-*/
