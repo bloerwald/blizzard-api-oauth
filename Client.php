@@ -454,6 +454,10 @@ class oauthApi
 	public function _buildtype($class,$fields)
 	{
 		if (isset ($fields['server'])) $fields['realm'] = $fields['server'];
+        foreach ($fields as $key => $value)
+        {
+          $fields[$key] = urlencode ($value);
+        }
 		switch ($class)
 		{
 			/*
@@ -498,62 +502,24 @@ class oauthApi
 				Character Profile API
 			*/
 			case 'character':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'achievements':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'appearance':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'feed':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'guild':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'hunter_pets':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'items':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'mounts':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'pets':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'pet_slots':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'professions':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'progression':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'pvp':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'quests':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'reputation':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'statistics':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'stats':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'talents':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'titles':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'audit':
 				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
 			break;
@@ -563,17 +529,9 @@ class oauthApi
 				Guild Profile API
 			*/
 			case 'guild':
-				$q = '/wow/guild/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'members':
-				$q = '/wow/guild/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'achievements':
-				$q = '/wow/guild/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'news':
-				$q = '/wow/guild/'.$fields['realm'].'/'.$fields['name'].'';
-			break;
 			case 'challenge':
 				$q = '/wow/guild/'.$fields['realm'].'/'.$fields['name'].'';
 			break;
@@ -703,7 +661,6 @@ class oauthApi
 				$q = '/wow/data/pet/types';
 			break;
 		}
-		$q = str_replace(' ' , '%20' , $q);
 		return $q;
 	}
 	
