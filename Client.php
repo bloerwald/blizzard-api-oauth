@@ -521,7 +521,7 @@ class oauthApi
 			case 'talents':
 			case 'titles':
 			case 'audit':
-				$q = '/wow/character/'.$fields['realm'].'/'.$fields['name'].'';
+				$q = '/wow/character/'.$fields['realm'].'/'.urlencode($fields['name']).'';
 			break;
 
 
@@ -533,7 +533,7 @@ class oauthApi
 			case 'achievements':
 			case 'news':
 			case 'challenge':
-				$q = '/wow/guild/'.$fields['realm'].'/'.$fields['name'].'';
+				$q = '/wow/guild/'.$fields['realm'].'/'.urlencode($fields['name']).'';
 			break;
 				
 			/*
