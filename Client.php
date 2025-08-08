@@ -157,37 +157,37 @@ class oauthApi
 				'urlbase'					=> 'https://us.api.blizzard.com',
 				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
 				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://us.battle.net',
+				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
 			),
 			'EU' => array(
 				'urlbase'					=> 'https://eu.api.blizzard.com',
 				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
 				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://eu.battle.net',
+				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
 			),
 			'KR' => array(
 				'urlbase'					=> 'https://kr.api.blizzard.com',
 				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
 				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://kr.battle.net',
+				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
 			),
 			'TW' => array(
 				'urlbase'					=> 'https://tw.api.blizzard.com',
 				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
 				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://tw.battle.net',
+				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
 			),
 			'CN' => array(
 				'urlbase'					=> 'https://gateway.battlenet.com.cn',
 				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net.cn/authorize',
 				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net.cn/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://cn.battle.net',
+				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battlenet.com.cn',
 			),
 			'SEA' => array(
 				'urlbase'					=> 'https://sea.api.blizzard.com',
 				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
 				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://sea.battle.net',
+				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
 			),
 	);
 	
