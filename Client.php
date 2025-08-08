@@ -155,38 +155,38 @@ class oauthApi
 
 			'US' => array(
 				'urlbase'					=> 'https://us.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://us.battle.net/oauth/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://us.battle.net/oauth/token',
+				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
+				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
 				'ACCOUNT_ENDPOINT'			=> 'https://us.battle.net',
 			),
 			'EU' => array(
 				'urlbase'					=> 'https://eu.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://eu.battle.net/oauth/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://eu.battle.net/oauth/token',
+				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
+				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
 				'ACCOUNT_ENDPOINT'			=> 'https://eu.battle.net',
 			),
 			'KR' => array(
 				'urlbase'					=> 'https://kr.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://kr.battle.net/oauth/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://kr.battle.net/oauth/token',
+				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
+				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
 				'ACCOUNT_ENDPOINT'			=> 'https://kr.battle.net',
 			),
 			'TW' => array(
 				'urlbase'					=> 'https://tw.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://tw.battle.net/oauth/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://tw.battle.net/oauth/token',
+				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
+				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
 				'ACCOUNT_ENDPOINT'			=> 'https://tw.battle.net',
 			),
 			'CN' => array(
-				'urlbase'					=> 'https://cn.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://cn.battle.net/oauth/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://cn.battle.net/oauth/token',
+				'urlbase'					=> 'https://gateway.battlenet.com.cn',
+				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net.cn/authorize',
+				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net.cn/token',
 				'ACCOUNT_ENDPOINT'			=> 'https://cn.battle.net',
 			),
 			'SEA' => array(
 				'urlbase'					=> 'https://sea.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://sea.battle.net/oauth/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://sea.battle.net/oauth/token',
+				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
+				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
 				'ACCOUNT_ENDPOINT'			=> 'https://sea.battle.net',
 			),
 	);
@@ -402,6 +402,8 @@ class oauthApi
 	
 	protected function _buildUrl($path, $params = array())
     {
+        $pull_namespace = "static-".strtolower($this->region);
+
 		// allways called in all api calls
 		$params['apikey'] = $this->client_id;
 		if (isset($this->access_token))
@@ -410,7 +412,7 @@ class oauthApi
 		}
 		//set for translation
 		$params['locale'] = $this->locale;
-
+        $params['namespace'] = $pull_namespace;
 		if ($path == 'account')
 		{
 			$url = $this->baseurl[$this->region]['ACCOUNT_ENDPOINT'];
@@ -456,212 +458,463 @@ class oauthApi
 		if (isset ($fields['server'])) $fields['realm'] = $fields['server'];
         foreach ($fields as $key => $value)
         {
-          $fields[$key] = urlencode ($value);
+          $fields[$key] = rawurlencode ($value);
         }
-		switch ($class)
+		switch (str_replace('-', '_', $class))
 		{
-			/*
-				Achievement API
-			*/
-			case 'achievement':
-				$q = '/wow/achievement/'.$fields['id'].'';
-			break;
+            case 'account':
+                return '/oauth/userinfo';
 
+            /* Account Profile API */
+            case 'wowprofile':
+            case 'account_profile_summary':
+                return '/profile/user/wow';
+            case 'protected_character_profile_summary':
+                return '/profile/user/wow/protected-character/'.$fields['realmId'].'-'.$fields['characterId'];
+            case 'account_collections_index':
+                return '/profile/user/wow/collections';
+            case 'account_mounts_collection_summary':
+                return '/profile/user/wow/collections/mounts';
+            case 'account_pets_collection_summary':
+                return '/profile/user/wow/collections/pets';
 
-			/*
-				Auction API
-			*/
-			case 'auction_data':
-				$q = '/wow/auction/data/'.$fields['realm'].'';
-			break;
+            /*  Achievement API */
+            case 'achievement_categories_index':
+                return '/data/wow/achievement-category/index';
+            case 'achievement_category':
+                return '/data/wow/achievement-category/'.$fields['achievementCategoryId'];
+            case 'achievements_index':
+                return '/data/wow/achievement/index';
+            case 'achievement':
+                if (isset($fields['id']) && !isset($fields['achievementId'])) $fields['achievementId'] = $fields['id'];
+                return '/data/wow/achievement/'.$fields['achievementId'];
+            case 'achievement_media':
+                return '/data/wow/media/achievement/'.$fields['achievementId'];
 
+            /*  Auction House API */
+            case 'auctions':
+                return '/data/wow/connected-realm/'.$fields['connectedRealmId'].'/auctions';
+            case 'commodities':
+                return '/data/wow/auctions/commodities';
 
-			/*
-				Boss API
-			*/
-			case 'boss_list':
-				$q = '/wow/boss/';
-			break;
-			case 'boss':
-				$q = '/wow/boss/'.$fields['bossid'].'';
-			break;
+            /*  Azerite Essence API */
+            case 'azerite_essences_index':
+                return '/data/wow/azerite-essence/index';
+            case 'azerite_essence':
+                return '/data/wow/azerite-essence/'.$fields['azeriteEssenceId'];
+            case 'azerite_essence_search':
+                return '/data/wow/search/azerite-essence';
+            case 'azerite_essence_media':
+                return '/data/wow/media/azerite-essence/'.$fields['azeriteEssenceId'];
 
+            /*  Connected Realm API */
+            case 'connected_realms_index':
+                return '/data/wow/connected-realm/index';
+            case 'connected_realm':
+                return '/data/wow/connected-realm/'.$fields['connectedRealmId'];
+            case 'connected_realms_search':
+                return '/data/wow/search/connected-realm';
 
-			/*
-				Challenge Mode API
-			*/
-			case 'realm_leaderboard':
-				$q = '/wow/challenge/'.$fields['realm'].'';
-			break;
-			case 'region_leaderboard':
-				$q = '/wow/challenge/region';
-			break;
+            /*  Covenant API */
+            case 'covenant_index':
+                return '/data/wow/covenant/index';
+            case 'covenant':
+                return '/data/wow/covenant/'.$fields['covenantId'];
+            case 'covenant_media':
+                return '/data/wow/media/covenant/'.$fields['covenantId'];
+            case 'soulbind_index':
+                return '/data/wow/covenant/soulbind/index';
+            case 'soulbind':
+                return '/data/wow/covenant/soulbind/'.$fields['soulbindId'];
+            case 'conduit_index':
+                return '/data/wow/covenant/conduit/index';
+            case 'conduit':
+                return '/data/wow/covenant/conduit/'.$fields['conduitId'];
 
+            /*  Creature API */
+            case 'creature_families_index':
+                return '/data/wow/creature-family/index';
+            case 'creature_family':
+                return '/data/wow/creature-family/'.$fields['creatureFamilyId'];
+            case 'creature_types_index':
+                return '/data/wow/creature-type/index';
+            case 'creature_type':
+                return '/data/wow/creature-type/'.$fields['creatureTypeId'];
+            case 'creature':
+                return '/data/wow/creature/'.$fields['creatureId'];
+            case 'creature_search':
+                return '/data/wow/search/creature';
+            case 'creature_display_media':
+                return '/data/wow/media/creature-display/'.$fields['creatureDisplayId'];
+            case 'creature_family_media':
+                return '/data/wow/media/creature-family/'.$fields['creatureFamilyId'];
 
-			/*
-				Character Profile API
-			*/
-			case 'character':
-			case 'achievements':
-			case 'appearance':
-			case 'feed':
-			case 'guild':
-			case 'hunter_pets':
-			case 'items':
-			case 'mounts':
-			case 'pets':
-			case 'pet_slots':
-			case 'professions':
-			case 'progression':
-			case 'pvp':
-			case 'quests':
-			case 'reputation':
-			case 'statistics':
-			case 'stats':
-			case 'talents':
-			case 'titles':
-			case 'audit':
-				$q = '/wow/character/'.$fields['realm'].'/'.rawurlencode($fields['name']).'';
-			break;
+            /*  Guild Crest API */
+            case 'guild_crest_components_index':
+                return '/data/wow/guild-crest/index';
+            case 'guild_crest_border_media':
+                return '/data/wow/media/guild-crest/border/'.$fields['borderId'];
+            case 'guild_crest_emblem_media':
+                return '/data/wow/media/guild-crest/emblem/'.$fields['emblemId'];
 
+            /*  Item API */
+            case 'item_classes_index':
+                return '/data/wow/item-class/index';
+            case 'item_class':
+                return '/data/wow/item-class/'.$fields['itemClassId'];
+            case 'item_sets_index':
+                return '/data/wow/item-set/index';
+            case 'item_set':
+                return '/data/wow/item-set/'.$fields['itemSetId'];
+            case 'item_subclass':
+                return '/data/wow/item-class/'.$fields['itemClassId'].'/item-subclass/'.$fields['itemSubclassId'];
+            case 'item':
+                return '/data/wow/item/'.$fields['itemId'];
+            case 'item_media':
+                return '/data/wow/media/item/'.$fields['itemId'];
+            case 'item_search':
+                return '/data/wow/search/item';
 
-			/*
-				Guild Profile API
-			*/
-			case 'guild':
-			case 'members':
-			case 'achievements':
-			case 'news':
-			case 'challenge':
-				$q = '/wow/guild/'.$fields['realm'].'/'.rawurlencode($fields['name']).'';
-			break;
-				
-			/*
-				Item API
-			*/
-			case 'item':
-				$q = '/wow/item/'.$fields['id'].'';
-			break;
-			case 'item_set':
-				$q = '/wow/item/set/'.$fields['setid'].'';
-			break;
-				
-			/*
-				Mount API
-			*/
-			case 'mount_list':
-				$q = '/wow/mount/';
-			break;
-				
-			/*
-				Pet API
-			*/
-			case 'pet_list':
-				$q = '/wow/pet/';
-			break;
-			case 'abilities':
-				$q = '/wow/pet/ability/'.$fields['abilityID'].'';
-			break;
-			case 'species':
-				$q = '/wow/pet/species/'.$fields['speciesID'].'';
-			break;
-			case 'stats':
-				$q = '/wow/pet/stats/'.$fields['speciesID'].'';
-			break;
-				
-			/*
-				PVP API
-			*/
-			case 'leaderboards':
-				$q = '/wow/leaderboard/'.$fields['bracket'].'';
-			break;
-				
-			/*
-				Quest API
-			*/
-			case 'quest':
-				$q = '/wow/quest/'.$fields['questId'].'';
-			break;
+            /*  Journal API */
+            case 'journal_expansions_index':
+                return '/data/wow/journal-expansion/index';
+            case 'journal_expansion':
+                return '/data/wow/journal-expansion/'.$fields['journalExpansionId'];
+            case 'journal_encounters_index':
+                return '/data/wow/journal-encounter/index';
+            case 'journal_encounter':
+                return '/data/wow/journal-encounter/'.$fields['journalEncounterId'];
+            case 'journal_encounter_search':
+                return '/data/wow/search/journal-encounter';
+            case 'journal_instances_index':
+                return '/data/wow/journal-instance/index';
+            case 'journal_instance':
+                return '/data/wow/journal-instance/'.$fields['journalInstanceId'];
+            case 'journal_instance_media':
+                return '/data/wow/media/journal-instance/'.$fields['journalInstanceId'];
 
+            /*  Media Search API */
+            case 'media_search':
+                return '/data/wow/search/media';
 
-			/*
-				Realm Status API
-			*/
-			case 'realm_status':
-				$q = '/wow/realm/status';
-			break;
-				
-			/*
-				Recipe API
-			*/
-			case 'recipe':
-				$q = '/wow/recipe/'.$fields['recipeId'].'';
-			break;
-				
-			/*
-				Spell API
-			*/
-			case 'spell':
-				$q = '/wow/spell/'.$fields['spellId'].'';
-			break;
-				
-			/*
-				User API
-			*/
-			case 'wowprofile':
-				$q = '/wow/user/characters';
-			break;
-			case 'account':
-				$q = '/oauth/userinfo';
-			break;
+            /*  Modified Crafting API */
+            case 'modified_crafting_index':
+                return '/data/wow/modified-crafting/index';
+            case 'modified_crafting_category_index':
+                return '/data/wow/modified-crafting/category/index';
+            case 'modified_crafting_category':
+                return '/data/wow/modified-crafting/category/'.$fields['categoryId'];
+            case 'modified-crafting-reagent-slot-type-index':
+                return '/data/wow/modified-crafting/reagent-slot-type/index';
+            case 'modified-crafting-reagent-slot-type':
+                return '/data/wow/modified-crafting/reagent-slot-type/'.$fields['slotTypeId'];
 
+            /*  Mount API */
+            case 'mounts_index':
+                return '/data/wow/mount/index';
+            case 'mount':
+                return '/data/wow/mount/'.$fields['mountId'];
+            case 'mount_search':
+                return '/data/wow/search/mount';
 
-			/*
-				Zone API
-			*/
-			case 'master_list':
-				$q = '/wow/zone/';
-			break;
-			case 'zone':
-				$q = '/wow/zone/'.$fields['zoneid'].'';
-			break;
+            /*  Mythic Keystone Affix API */
+            case 'mythic_keystone_affixes_index':
+                return '/data/wow/keystone-affix/index';
+            case 'mythic_keystone_affix':
+                return '/data/wow/keystone-affix/'.$fields['keystoneAffixId'];
+            case 'mythic_keystone_affix_media':
+                return '/data/wow/media/keystone-affix/'.$fields['keystoneAffixId'];
 
+            /*  Mythic Keystone Dungeon API */
+            case 'mythic_keystone_dungeons_index':
+                return '/data/wow/mythic-keystone/dungeon/index';
+            case 'mythic_keystone_dungeon':
+                return '/data/wow/mythic-keystone/dungeon/'.$fields['dungeonId'];
+            case 'mythic_keystone_index':
+                return '/data/wow/mythic-keystone/index';
+            case 'mythic_keystone_periods_index':
+                return '/data/wow/mythic-keystone/period/index';
+            case 'mythic_keystone_period':
+                return '/data/wow/mythic-keystone/period/'.$fields['periodId'];
+            case 'mythic_keystone_seasons_index':
+                return '/data/wow/mythic-keystone/season/index';
+            case 'mythic_keystone_season':
+                return '/data/wow/mythic-keystone/season/'.$fields['seasonId'];
 
-			/*
-				Data Resources
-			*/
-			case 'battlegroups':
-				$q = '/wow/data/battlegroups/';
-			break;
-			case 'character_races':
-				$q = '/wow/data/character/races';
-			break;
-			case 'character_classes':
-				$q = '/wow/data/character/classes';
-			break;
-			case 'character_achievements':
-				$q = '/wow/data/character/achievements';
-			break;
-			case 'guild_rewards':
-				$q = '/wow/data/guild/rewards';
-			break;
-			case 'guild_perks':
-				$q = '/wow/data/guild/perks';
-			break;
-			case 'guild_achievements':
-				$q = '/wow/data/guild/achievements';
-			break;
-			case 'item_classes':
-				$q = '/wow/data/item/classes';
-			break;
-			case 'talents':
-				$q = '/wow/data/talents';
-			break;
-			case 'pet_types':
-				$q = '/wow/data/pet/types';
-			break;
+            /*  Mythic Keystone Leaderboard API */
+            case 'mythic_keystone_leaderboards_index':
+                return '/data/wow/connected-realm/'.$fields['connectedRealmId'].'/mythic-leaderboard/index';
+            case 'mythic_keystone_leaderboard':
+                return '/data/wow/connected-realm/'.$fields['connectedRealmId'].'/mythic-leaderboard/'.$fields['dungeonId'].'/period/'.$fields['period'];
+
+            /*  Mythic Raid Leaderboard API */
+            case 'mythic_raid_leaderboard':
+                return '/data/wow/leaderboard/hall-of-fame/'.$fields['raid'].'/'.$fields['faction'];
+
+            /*  Pet API */
+            case 'pets_index':
+                return '/data/wow/pet/index';
+            case 'pet':
+                return '/data/wow/pet/'.$fields['petId'];
+            case 'pet_media':
+                return '/data/wow/media/pet/'.$fields['petId'];
+            case 'pet_abilities_index':
+                return '/data/wow/pet-ability/index';
+            case 'pet_ability':
+                return '/data/wow/pet-ability/'.$fields['petAbilityId'];
+            case 'pet_ability_media':
+                return '/data/wow/media/pet-ability/'.$fields['petAbilityId'];
+
+            /*  Playable Class API */
+            case 'playable_classes_index':
+                return '/data/wow/playable-class/index';
+            case 'playable_class':
+                return '/data/wow/playable-class/'.$fields['classId'];
+            case 'playable_class_media':
+                return '/data/wow/media/playable-class/'.$fields['playableClassId'];
+            case 'pvp_talent_slots':
+                return '/data/wow/playable-class/'.$fields['classId'].'/pvp-talent-slots';
+
+            /*  Playable Race API */
+            case 'playable_races_index':
+                return '/data/wow/playable-race/index';
+            case 'playable_race':
+                return '/data/wow/playable-race/'.$fields['playableRaceId'];
+
+            /*  Playable Specialization API */
+            case 'playable_specializations_index':
+                return '/data/wow/playable-specialization/index';
+            case 'playable_specialization':
+                return '/data/wow/playable-specialization/'.$fields['specId'];
+            case 'playable_specialization_media':
+                return '/data/wow/media/playable-specialization/'.$fields['specId'];
+
+            /*  Power Type API */
+            case 'power_types_index':
+                return '/data/wow/power-type/index';
+            case 'power_type':
+                return '/data/wow/power-type/'.$fields['powerTypeId'];
+
+            /*  Profession API */
+            case 'professions_index':
+                return '/data/wow/profession/index';
+            case 'profession':
+                return '/data/wow/profession/'.$fields['professionId'];
+            case 'profession_media':
+                return '/data/wow/media/profession/'.$fields['professionId'];
+            case 'profession_skill_tier':
+                return '/data/wow/profession/'.$fields['professionId'].'/skill-tier/'.$fields['skillTierId'];
+            case 'recipe':
+                return '/data/wow/recipe/'.$fields['recipeId'];
+            case 'recipe_media':
+                return '/data/wow/media/recipe/'.$fields['recipeId'];
+
+            /*  PvP Season API */
+            case 'pvp_seasons_index':
+                return '/data/wow/pvp-season/index';
+            case 'pvp_season':
+                return '/data/wow/pvp-season/'.$fields['pvpSeasonId'];
+            case 'pvp_leaderboards_index':
+                return '/data/wow/pvp-season/'.$fields['pvpSeasonId'].'/pvp-leaderboard/index';
+            case 'pvp_leaderboard':
+                return '/data/wow/pvp-season/'.$fields['pvpSeasonId'].'/pvp-leaderboard/'.$fields['pvpBracket'];
+            case 'pvp_rewards_index':
+                return '/data/wow/pvp-season/'.$fields['pvpSeasonId'].'/pvp-reward/index';
+
+            /*  PvP Tier API */
+            case 'pvp_tier_media':
+                return '/data/wow/media/pvp-tier/'.$fields['pvpTierId'];
+            case 'pvp_tiers_index':
+                return '/data/wow/pvp-tier/index';
+            case 'pvp_tier':
+                return '/data/wow/pvp-tier/'.$fields['pvpTierId'];
+
+            /*  Quest API */
+            case 'quests_index':
+                return '/data/wow/quest/index';
+            case 'quest':
+                return '/data/wow/quest/'.$fields['questId'];
+            case 'quest_categories_index':
+                return '/data/wow/quest/category/index';
+            case 'quest_category':
+                return '/data/wow/quest/category/'.$fields['questCategoryId'];
+            case 'quest_areas_index':
+                return '/data/wow/quest/area/index';
+            case 'quest_area':
+                return '/data/wow/quest/area/'.$fields['questAreaId'];
+            case 'quest_types_index':
+                return '/data/wow/quest/type/index';
+            case 'quest_type':
+                return '/data/wow/quest/type/'.$fields['questTypeId'];
+
+            /*  Realm API */
+            case 'realms_index':
+                return '/data/wow/realm/index';
+            case 'realm':
+                return '/data/wow/realm/'.$fields['server'];
+            case 'realm_search':
+                return '/data/wow/search/realm';
+
+            /*  Region API */
+            case 'regions_index':
+                return '/data/wow/region/index';
+            case 'region':
+                return '/data/wow/region/'.$fields['regionId'];
+
+            /*  Reputations API */
+            case 'reputation_factions_index':
+                return '/data/wow/reputation-faction/index';
+            case 'reputation_faction':
+                return '/data/wow/reputation-faction/'.$fields['reputationFactionId'];
+            case 'reputation_tiers_index':
+                return '/data/wow/reputation-tiers/index';
+            case 'reputation_tiers':
+                return '/data/wow/reputation-tiers/'.$fields['reputationTiersId'];
+
+            /*  Spell API */
+            case 'spell':
+                return '/data/wow/spell/'.$fields['spellId'];
+            case 'spell_media':
+                return '/data/wow/media/spell/'.$fields['spellId'];
+            case 'spell_search':
+                return '/data/wow/search/spell';
+
+            /*  Talent API */
+            case 'talents_index':
+                return '/data/wow/talent/index';
+            case 'talent':
+                return '/data/wow/talent/'.$fields['talentId'];
+            case 'pvp_talents_index':
+                return '/data/wow/pvp-talent/index';
+            case 'pvp_talent':
+                return '/data/wow/pvp-talent/'.$fields['pvpTalentId'];
+            case 'talent_tree_index':
+                return '/data/wow/talent-tree/index';
+            case 'talent_tree':
+                return '/data/wow/talent-tree/'.$fields['talentTreeId'].'/playable-specialization/'.$fields['specId'];
+            case 'talent_tree_nodes':
+                return '/data/wow/talent-tree/'.$fields['talentTreeId'];
+
+            /*  Tech Talent API */
+            case 'tech_talent_tree_index':
+                return '/data/wow/tech-talent-tree/index';
+            case 'tech_talent_tree':
+                return '/data/wow/tech-talent-tree/'.$fields['techTalentTreeId'];
+            case 'tech_talent_index':
+                return '/data/wow/tech-talent/index';
+            case 'tech_talent':
+                return '/data/wow/tech-talent/'.$fields['techTalentId'];
+            case 'tech_talent_media':
+                return '/data/wow/media/tech-talent/'.$fields['techTalentId'];
+
+            /*  Title API */
+            case 'titles_index':
+                return '/data/wow/title/index';
+            case 'title':
+                return '/data/wow/title/'.$fields['titleId'];
+
+            /*  WoW Token API */
+            case 'wow_token_index':
+                return '/data/wow/token/index';
+
+            /*  Character Achievements API */
+            case 'character_achievements_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/achievements';
+            case 'character_achievement_statistics':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/achievements/statistics';
+
+            /*  Character Appearance API */
+            case 'character_appearance_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/appearance';
+
+            /*  Character Collections API */
+            case 'character_collections':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/collections';
+            case 'character_collections_mounts':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/collections/mounts';
+            case 'character_collections_pets':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/collections/pets';
+
+            /*  Character Encounters API */
+            case 'character_encounters_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/encounters';
+            case 'character_dungeons':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/encounters/dungeons';
+            case 'character_raids':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/encounters/raids';
+
+            /*  Character Equipment API */
+            case 'character_equipment_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/equipment';
+
+            /*  Character Hunter Pets API */
+            case 'character_hunter_pets_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/hunter-pets';
+
+            /*  Character Media API */
+            case 'character_media_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/character-media';
+
+            /*  Character Mythic Keystone Profile API */
+            case 'character-mythic-keystone-profile-index':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/mythic-keystone-profile';
+            case 'character-mythic-keystone-season-details':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/mythic-keystone-profile/season/'.$fields['seasonId'];
+
+            /*  Character Professions API */
+            case 'character_professions':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/professions';
+
+            /*  Character Profile API */
+            case 'character_profile_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8');
+            case 'character_profile_status':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/status';
+
+            /*  Character PvP API */
+            case 'character_pvp_bracket_statistics':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/pvp-bracket/'.$fields['pvpBracket'];
+
+            case 'character_pvp_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/pvp-summary';
+
+            /*  Character Quests API */
+            case 'character_quests':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/quests';
+            case 'character_completed_quests':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/quests/completed';
+
+            /*  Character Reputations API */
+            case 'character_reputations_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/reputations';
+
+            /*  Character Soulbinds API */
+            case 'character_soulbinds':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/soulbinds';
+
+            /*  Character Specializations API */
+            case 'character_specializations_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/specializations';
+
+            /*  Character Statistics API */
+            case 'character_statistics_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/statistics';
+
+            /*  Character Titles API */
+            case 'character_titles_summary':
+                return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/titles';
+
+            /*  Guild API */
+            case 'guild':
+                return '/data/wow/guild/'.$fields['server'].'/'.$fields['nameSlug'];
+            case 'guild_activity':
+                return '/data/wow/guild/'.$fields['server'].'/'.$fields['nameSlug'].'/activity';
+            case 'guild_achievements':
+                return '/data/wow/guild/'.$fields['server'].'/'.$fields['nameSlug'].'/achievements';
+            case 'guild_roster':
+                return '/data/wow/guild/'.$fields['server'].'/'.$fields['nameSlug'].'/roster';
 		}
-		return $q;
+        throw new InvalidArgumentException ('Unknown Blizzard web API request ' . $class);
 	}
 	
     /**
