@@ -331,7 +331,6 @@ class oauthApi
                 break;
             default:
                 throw new Exception('Unknown client auth type.', Exception::INVALID_CLIENT_AUTHENTICATION_TYPE);
-                break;
         }
 
         $result = $this->executeRequest($token_endpoint, $parameters, self::HTTP_METHOD_POST, $http_headers, self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
@@ -439,7 +438,6 @@ class oauthApi
 	
 	function _build_strings($params, $sep)
 	{
-		$e = '';
 		$r = array();
 		foreach($params as $key=>$val)
 		{
@@ -1117,7 +1115,6 @@ class oauthApi
      */
     public function fetch($protected_resource_url, $parameters = array(), $http_headers = array(), $http_method = self::HTTP_METHOD_GET, $form_content_type = self::HTTP_FORM_CONTENT_TYPE_MULTIPART)
     {
-		global $roster;
 		$protected_resource_url = self::_buildUrl($protected_resource_url, $parameters);
 		
         if ($this->access_token) {
@@ -1143,7 +1140,6 @@ class oauthApi
                     break;
                 default:
                     throw new Exception('Unknown access token type.', Exception::INVALID_ACCESS_TOKEN_TYPE);
-                    break;
             }
         }
 		
@@ -1201,14 +1197,11 @@ class oauthApi
      */
     private function executeRequest($url, $parameters = array(), $http_method = self::HTTP_METHOD_GET, array $http_headers = null, $form_content_type = self::HTTP_FORM_CONTENT_TYPE_MULTIPART)
     {
-		global $roster;
-		
 		//echo $url.'<br>'.$http_method.'<br>';
 		
         $curl_options = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_CUSTOMREQUEST  => $http_method
         );
         switch($http_method) {
             case self::HTTP_METHOD_POST:
@@ -1267,7 +1260,6 @@ class oauthApi
 		{
             curl_setopt_array($ch, $this->curl_options);
         }
-		curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
