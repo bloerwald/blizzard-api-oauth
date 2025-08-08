@@ -402,8 +402,6 @@ class oauthApi
 	
 	protected function _buildUrl($path, $params = array())
     {
-        $pull_namespace = "static-".strtolower($this->region);
-
 		// allways called in all api calls
 		$params['apikey'] = $this->client_id;
 		if (isset($this->access_token))
@@ -412,7 +410,10 @@ class oauthApi
 		}
 		//set for translation
 		$params['locale'] = $this->locale;
-        $params['namespace'] = $pull_namespace;
+		if ($this->_request_namespace($path))
+		{
+			$params['namespace'] = $this->_request_namespace($path).'-'.$this->region;
+		}
 		if ($path == 'account')
 		{
 			$url = $this->baseurl[$this->region]['ACCOUNT_ENDPOINT'];
@@ -874,7 +875,6 @@ class oauthApi
             /*  Character PvP API */
             case 'character_pvp_bracket_statistics':
                 return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/pvp-bracket/'.$fields['pvpBracket'];
-
             case 'character_pvp_summary':
                 return '/profile/wow/character/'.$fields['server'].'/'.mb_strtolower($fields['name'], 'UTF-8').'/pvp-summary';
 
@@ -916,6 +916,194 @@ class oauthApi
 		}
         throw new InvalidArgumentException ('Unknown Blizzard web API request ' . $class);
 	}
+
+    public function _request_namespace($class)
+    {
+        switch (str_replace('-', '_', $class))
+        {
+            case 'account':
+                return null;
+
+            case 'achievement':
+            case 'achievement_categories_index':
+            case 'achievement_category':
+            case 'achievement_media':
+            case 'achievements_index':
+            case 'azerite_essence':
+            case 'azerite_essence_media':
+            case 'azerite_essence_search':
+            case 'azerite_essences_index':
+            case 'conduit':
+            case 'conduit_index':
+            case 'covenant':
+            case 'covenant_index':
+            case 'covenant_media':
+            case 'creature':
+            case 'creature_display_media':
+            case 'creature_families_index':
+            case 'creature_family':
+            case 'creature_family_media':
+            case 'creature_search':
+            case 'creature_type':
+            case 'creature_types_index':
+            case 'guild_crest_border_media':
+            case 'guild_crest_components_index':
+            case 'guild_crest_emblem_media':
+            case 'item':
+            case 'item_class':
+            case 'item_classes_index':
+            case 'item_media':
+            case 'item_search':
+            case 'item_set':
+            case 'item_sets_index':
+            case 'item_subclass':
+            case 'journal_encounter':
+            case 'journal_encounter_search':
+            case 'journal_encounters_index':
+            case 'journal_expansion':
+            case 'journal_expansions_index':
+            case 'journal_instance':
+            case 'journal_instance_media':
+            case 'journal_instances_index':
+            case 'media_search':
+            case 'modified-crafting-reagent-slot-type':
+            case 'modified-crafting-reagent-slot-type-index':
+            case 'modified_crafting_category':
+            case 'modified_crafting_category_index':
+            case 'modified_crafting_index':
+            case 'mount':
+            case 'mount_search':
+            case 'mounts_index':
+            case 'mythic_keystone_affix':
+            case 'mythic_keystone_affix_media':
+            case 'mythic_keystone_affixes_index':
+            case 'pet':
+            case 'pet_abilities_index':
+            case 'pet_ability':
+            case 'pet_ability_media':
+            case 'pet_media':
+            case 'pets_index':
+            case 'playable_class':
+            case 'playable_class_media':
+            case 'playable_classes_index':
+            case 'playable_race':
+            case 'playable_races_index':
+            case 'playable_specialization':
+            case 'playable_specialization_media':
+            case 'playable_specializations_index':
+            case 'power_type':
+            case 'power_types_index':
+            case 'profession':
+            case 'profession_media':
+            case 'profession_skill_tier':
+            case 'professions_index':
+            case 'pvp_talent':
+            case 'pvp_talent_slots':
+            case 'pvp_talents_index':
+            case 'pvp_tier':
+            case 'pvp_tier_media':
+            case 'pvp_tiers_index':
+            case 'quest':
+            case 'quest_area':
+            case 'quest_areas_index':
+            case 'quest_categories_index':
+            case 'quest_category':
+            case 'quest_type':
+            case 'quest_types_index':
+            case 'quests_index':
+            case 'realm':
+            case 'realm_search':
+            case 'realms_index':
+            case 'recipe':
+            case 'recipe_media':
+            case 'region':
+            case 'regions_index':
+            case 'reputation_faction':
+            case 'reputation_factions_index':
+            case 'reputation_tiers':
+            case 'reputation_tiers_index':
+            case 'soulbind':
+            case 'soulbind_index':
+            case 'spell':
+            case 'spell_media':
+            case 'spell_search':
+            case 'talent':
+            case 'talent_tree':
+            case 'talent_tree_index':
+            case 'talent_tree_nodes':
+            case 'talents_index':
+            case 'tech_talent':
+            case 'tech_talent_index':
+            case 'tech_talent_media':
+            case 'tech_talent_tree':
+            case 'tech_talent_tree_index':
+            case 'title':
+            case 'titles_index':
+                return 'static';
+
+            case 'auctions':
+            case 'commodities':
+            case 'connected_realm':
+            case 'connected_realms_index':
+            case 'connected_realms_search':
+            case 'mythic_keystone_dungeon':
+            case 'mythic_keystone_dungeons_index':
+            case 'mythic_keystone_index':
+            case 'mythic_keystone_leaderboard':
+            case 'mythic_keystone_leaderboards_index':
+            case 'mythic_keystone_period':
+            case 'mythic_keystone_periods_index':
+            case 'mythic_keystone_season':
+            case 'mythic_keystone_seasons_index':
+            case 'mythic_raid_leaderboard':
+            case 'pvp_leaderboard':
+            case 'pvp_leaderboards_index':
+            case 'pvp_rewards_index':
+            case 'pvp_season':
+            case 'pvp_seasons_index':
+                return 'dynamic';
+
+            case 'account_collections_index':
+            case 'account_mounts_collection_summary':
+            case 'account_pets_collection_summary':
+            case 'account_profile_summary':
+            case 'character-mythic-keystone-profile-index':
+            case 'character-mythic-keystone-season-details':
+            case 'character_achievement_statistics':
+            case 'character_achievements_summary':
+            case 'character_appearance_summary':
+            case 'character_collections':
+            case 'character_collections_mounts':
+            case 'character_collections_pets':
+            case 'character_completed_quests':
+            case 'character_dungeons':
+            case 'character_encounters_summary':
+            case 'character_equipment_summary':
+            case 'character_hunter_pets_summary':
+            case 'character_media_summary':
+            case 'character_professions':
+            case 'character_profile_status':
+            case 'character_profile_summary':
+            case 'character_pvp_bracket_statistics':
+            case 'character_pvp_summary':
+            case 'character_quests':
+            case 'character_raids':
+            case 'character_reputations_summary':
+            case 'character_soulbinds':
+            case 'character_specializations_summary':
+            case 'character_statistics_summary':
+            case 'character_titles_summary':
+            case 'guild':
+            case 'guild_achievements':
+            case 'guild_activity':
+            case 'guild_roster':
+            case 'protected_character_profile_summary':
+            case 'wowprofile':
+                return 'profile';
+        }
+        throw new InvalidArgumentException ('Unknown Blizzard web API request ' . $class);
+    }
+
 	
     /**
      * Fetch a protected ressource
