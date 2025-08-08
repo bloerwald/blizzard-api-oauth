@@ -52,7 +52,7 @@ class oauthApi
     const GRANT_TYPE_PASSWORD           = 'password';
     const GRANT_TYPE_CLIENT_CREDENTIALS = 'client_id';
     const GRANT_TYPE_REFRESH_TOKEN      = 'refresh_token';
-	const GRANT_TYPE_C_C 				= 'client_credentials';
+    const GRANT_TYPE_C_C                = 'client_credentials';
 
     /**
      * HTTP Methods
@@ -140,85 +140,85 @@ class oauthApi
      */
     protected $curl_options = array();
 
-	/**
-	 *	Redirect uri
-	 *
-	 */
-	public $redirect_uri = '';
-	
-	
-	/**
-	 *	Base url setting
-	 *
-	 */
-	public $baseurl = array(
+    /**
+     *  Redirect uri
+     *
+     */
+    public $redirect_uri = '';
 
-			'US' => array(
-				'urlbase'					=> 'https://us.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
-			),
-			'EU' => array(
-				'urlbase'					=> 'https://eu.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
-			),
-			'KR' => array(
-				'urlbase'					=> 'https://kr.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
-			),
-			'TW' => array(
-				'urlbase'					=> 'https://tw.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
-			),
-			'CN' => array(
-				'urlbase'					=> 'https://gateway.battlenet.com.cn',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net.cn/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net.cn/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battlenet.com.cn',
-			),
-			'SEA' => array(
-				'urlbase'					=> 'https://sea.api.blizzard.com',
-				'AUTHORIZATION_ENDPOINT'	=> 'https://oauth.battle.net/authorize',
-				'TOKEN_ENDPOINT'			=> 'https://oauth.battle.net/token',
-				'ACCOUNT_ENDPOINT'			=> 'https://oauth.battle.net',
-			),
-	);
-	
-	public $ignore_cache = false;
-	/**
-	 *	region setting
-	 *
-	 */
-	public $region = '';
-	
-	 /**
-	 *	Locale setting
-	 *
-	 */
-	public $locale = '';
-	
-	/*
-	*	some tracking bits for people
-	*/
-	public $usage = array(
-				'type'				=> '',
-				'url'				=> '',
-				'responce_code'		=> '',
-				'content_type'		=> '',
-				'locale'			=> '',
-			);
-	public $cache;
-	public $item;
-	
-	public $errno = CURLE_OK;
-	public $error = '';
+
+    /**
+     *  Base url setting
+     *
+     */
+    public $baseurl = array(
+
+            'US' => array(
+                'urlbase'                   => 'https://us.api.blizzard.com',
+                'AUTHORIZATION_ENDPOINT'    => 'https://oauth.battle.net/authorize',
+                'TOKEN_ENDPOINT'            => 'https://oauth.battle.net/token',
+                'ACCOUNT_ENDPOINT'          => 'https://oauth.battle.net',
+            ),
+            'EU' => array(
+                'urlbase'                   => 'https://eu.api.blizzard.com',
+                'AUTHORIZATION_ENDPOINT'    => 'https://oauth.battle.net/authorize',
+                'TOKEN_ENDPOINT'            => 'https://oauth.battle.net/token',
+                'ACCOUNT_ENDPOINT'          => 'https://oauth.battle.net',
+            ),
+            'KR' => array(
+                'urlbase'                   => 'https://kr.api.blizzard.com',
+                'AUTHORIZATION_ENDPOINT'    => 'https://oauth.battle.net/authorize',
+                'TOKEN_ENDPOINT'            => 'https://oauth.battle.net/token',
+                'ACCOUNT_ENDPOINT'          => 'https://oauth.battle.net',
+            ),
+            'TW' => array(
+                'urlbase'                   => 'https://tw.api.blizzard.com',
+                'AUTHORIZATION_ENDPOINT'    => 'https://oauth.battle.net/authorize',
+                'TOKEN_ENDPOINT'            => 'https://oauth.battle.net/token',
+                'ACCOUNT_ENDPOINT'          => 'https://oauth.battle.net',
+            ),
+            'CN' => array(
+                'urlbase'                   => 'https://gateway.battlenet.com.cn',
+                'AUTHORIZATION_ENDPOINT'    => 'https://oauth.battle.net.cn/authorize',
+                'TOKEN_ENDPOINT'            => 'https://oauth.battle.net.cn/token',
+                'ACCOUNT_ENDPOINT'          => 'https://oauth.battlenet.com.cn',
+            ),
+            'SEA' => array(
+                'urlbase'                   => 'https://sea.api.blizzard.com',
+                'AUTHORIZATION_ENDPOINT'    => 'https://oauth.battle.net/authorize',
+                'TOKEN_ENDPOINT'            => 'https://oauth.battle.net/token',
+                'ACCOUNT_ENDPOINT'          => 'https://oauth.battle.net',
+            ),
+    );
+
+    public $ignore_cache = false;
+    /**
+     *  region setting
+     *
+     */
+    public $region = '';
+
+     /**
+     *  Locale setting
+     *
+     */
+    public $locale = '';
+
+    /*
+    *   some tracking bits for people
+    */
+    public $usage = array(
+                'type'              => '',
+                'url'               => '',
+                'responce_code'     => '',
+                'content_type'      => '',
+                'locale'            => '',
+            );
+    public $cache;
+    public $item;
+
+    public $errno = CURLE_OK;
+    public $error = '';
     /**
      * Construct
      *
@@ -234,25 +234,25 @@ class oauthApi
             throw new Exception('The PHP exention curl must be installed to use this library.', Exception::CURL_NOT_FOUND);
         }
 
-		$r = preg_replace('/http:/', 'https:', $redirect_uri);
-		$client_auth			= self::AUTH_TYPE_URI;
-        $this->client_id		= $client_id;
-        $this->client_secret	= $client_secret;
-		$this->region			= $region;
-		$this->locale			= $locale;
-        $this->client_auth		= $client_auth;
-		$this->redirect_uri		= $r;
+        $r = preg_replace('/http:/', 'https:', $redirect_uri);
+        $client_auth            = self::AUTH_TYPE_URI;
+        $this->client_id        = $client_id;
+        $this->client_secret    = $client_secret;
+        $this->region           = $region;
+        $this->locale           = $locale;
+        $this->client_auth      = $client_auth;
+        $this->redirect_uri     = $r;
 
-		$this->setAccessToken ($this->getAccessToken (self::GRANT_TYPE_C_C)['access_token']);
-		$this->setAccessTokenType (self::ACCESS_TOKEN_BEARER);
-	
+        $this->setAccessToken ($this->getAccessToken (self::GRANT_TYPE_C_C)['access_token']);
+        $this->setAccessTokenType (self::ACCESS_TOKEN_BEARER);
+
     }
 
-	public function set_region($region)
-	{
-		$this->region = $region;
-	}
-	
+    public function set_region($region)
+    {
+        $this->region = $region;
+    }
+
     /**
      * Get the client Id
      *
@@ -284,8 +284,8 @@ class oauthApi
         $parameters = array_merge(array(
             'response_type' => 'code',
             'client_id'     => $this->client_id,
-			'scope'			=> 'wow.profile',
-			'auth_flow'		=> 'auth_code',
+            'scope'         => 'wow.profile',
+            'auth_flow'     => 'auth_code',
             'redirect_uri'  => $this->redirect_uri
         ), $extra_parameters);
         return $this->baseurl[$this->region]['AUTHORIZATION_ENDPOINT']
@@ -335,7 +335,7 @@ class oauthApi
 
         $result = $this->executeRequest($token_endpoint, $parameters, self::HTTP_METHOD_POST, $http_headers, self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
 
-		return $result;
+        return $result;
     }
 
     /**
@@ -378,7 +378,7 @@ class oauthApi
      * @param array $options An array specifying which options to set and their values
      * @return void
      */
-    public function setCurlOptions($options) 
+    public function setCurlOptions($options)
     {
         $this->curl_options = array_merge($this->curl_options, $options);
     }
@@ -398,69 +398,69 @@ class oauthApi
         $this->access_token_algorithm = $algorithm;
     }
 
-	
-	protected function _buildUrl($path, $params = array())
+
+    protected function _buildUrl($path, $params = array())
     {
-		// allways called in all api calls
-		$params['apikey'] = $this->client_id;
-		if (isset($this->access_token))
-		{
-			$params['access_token']	= $this->access_token;
-		}
-		//set for translation
-		$params['locale'] = $this->locale;
-		if ($this->_request_namespace($path))
-		{
-			$params['namespace'] = $this->_request_namespace($path).'-'.$this->region;
-		}
-		if ($path == 'account')
-		{
-			$url = $this->baseurl[$this->region]['ACCOUNT_ENDPOINT'];
-		}
-		else
-		{				
-			$url = $this->baseurl[$this->region]['urlbase'];
-		}
-		//$url .= $path;
-		$url .= self::_buildtype($path,$params);
-		unset($params['name']);
-		unset($params['server']);
-		$url .= (count($params)) ? '?' . $this->_build_strings($params, '&') : '';
-		$this->usage = array (
-			'type'		=> $path,
-			'url'		=> $url,
-			'locale'	=> $this->locale
-		);
-		//echo $url;
-		return $url;
-		
+        // allways called in all api calls
+        $params['apikey'] = $this->client_id;
+        if (isset($this->access_token))
+        {
+            $params['access_token'] = $this->access_token;
+        }
+        //set for translation
+        $params['locale'] = $this->locale;
+        if ($this->_request_namespace($path))
+        {
+            $params['namespace'] = $this->_request_namespace($path).'-'.$this->region;
+        }
+        if ($path == 'account')
+        {
+            $url = $this->baseurl[$this->region]['ACCOUNT_ENDPOINT'];
+        }
+        else
+        {
+            $url = $this->baseurl[$this->region]['urlbase'];
+        }
+        //$url .= $path;
+        $url .= self::_buildtype($path,$params);
+        unset($params['name']);
+        unset($params['server']);
+        $url .= (count($params)) ? '?' . $this->_build_strings($params, '&') : '';
+        $this->usage = array (
+            'type'      => $path,
+            'url'       => $url,
+            'locale'    => $this->locale
+        );
+        //echo $url;
+        return $url;
+
     }
-	
-	function _build_strings($params, $sep)
-	{
-		$r = array();
-		foreach($params as $key=>$val)
-		{
-			$r[] = $key.'='.$val;
-		}
-		$e = implode($sep, $r);
-		return $e;
-	}
-	
-	/**
-	*	Type of call uri build
-	*	$class - type of call
-	*	$fields - array of data (name,server,size)
-	**/
-	public function _buildtype($class,$fields)
-	{
-		if (isset ($fields['server'])) $fields['realm'] = $fields['server'];
+
+    function _build_strings($params, $sep)
+    {
+        $r = array();
+        foreach($params as $key=>$val)
+        {
+            $r[] = $key.'='.$val;
+        }
+        $e = implode($sep, $r);
+        return $e;
+    }
+
+    /**
+    *   Type of call uri build
+    *   $class - type of call
+    *   $fields - array of data (name,server,size)
+    **/
+    public function _buildtype($class,$fields)
+    {
+        if (isset ($fields['server'])) $fields['realm'] = $fields['server'];
         foreach ($fields as $key => $value)
         {
           $fields[$key] = rawurlencode ($value);
         }
-		switch (str_replace('-', '_', $class))
-		{
+        switch (str_replace('-', '_', $class))
+        {
             case 'account':
                 return '/oauth/userinfo';
 
@@ -911,9 +911,9 @@ class oauthApi
                 return '/data/wow/guild/'.$fields['server'].'/'.$fields['nameSlug'].'/achievements';
             case 'guild_roster':
                 return '/data/wow/guild/'.$fields['server'].'/'.$fields['nameSlug'].'/roster';
-		}
+        }
         throw new InvalidArgumentException ('Unknown Blizzard web API request ' . $class);
-	}
+    }
 
     public function _request_namespace($class)
     {
@@ -1102,7 +1102,7 @@ class oauthApi
         throw new InvalidArgumentException ('Unknown Blizzard web API request ' . $class);
     }
 
-	
+
     /**
      * Fetch a protected ressource
      *
@@ -1115,8 +1115,8 @@ class oauthApi
      */
     public function fetch($protected_resource_url, $parameters = array(), $http_headers = array(), $http_method = self::HTTP_METHOD_GET, $form_content_type = self::HTTP_FORM_CONTENT_TYPE_MULTIPART)
     {
-		$protected_resource_url = self::_buildUrl($protected_resource_url, $parameters);
-		
+        $protected_resource_url = self::_buildUrl($protected_resource_url, $parameters);
+
         if ($this->access_token) {
             switch ($this->access_token_type) {
                 case self::ACCESS_TOKEN_URI:
@@ -1142,10 +1142,10 @@ class oauthApi
                     throw new Exception('Unknown access token type.', Exception::INVALID_ACCESS_TOKEN_TYPE);
             }
         }
-		
-		$result = $this->executeRequest($protected_resource_url, $parameters, $http_method, $http_headers, $form_content_type);
-			
-		return $result;
+
+        $result = $this->executeRequest($protected_resource_url, $parameters, $http_method, $http_headers, $form_content_type);
+
+        return $result;
     }
 
     /**
@@ -1197,8 +1197,8 @@ class oauthApi
      */
     private function executeRequest($url, $parameters = array(), $http_method = self::HTTP_METHOD_GET, array $http_headers = null, $form_content_type = self::HTTP_FORM_CONTENT_TYPE_MULTIPART)
     {
-		//echo $url.'<br>'.$http_method.'<br>';
-		
+        //echo $url.'<br>'.$http_method.'<br>';
+
         $curl_options = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
@@ -1206,10 +1206,10 @@ class oauthApi
         switch($http_method) {
             case self::HTTP_METHOD_POST:
                 $curl_options[CURLOPT_POST] = true;
-				
+
                 /* No break */
             case self::HTTP_METHOD_PUT:
-			case self::HTTP_METHOD_PATCH:
+            case self::HTTP_METHOD_PATCH:
 
                 /**
                  * Passing an array to CURLOPT_POSTFIELDS will encode the data as multipart/form-data,
@@ -1226,14 +1226,14 @@ class oauthApi
                 /* No break */
             case self::HTTP_METHOD_DELETE:
             case self::HTTP_METHOD_GET:
-                
+
                 break;
             default:
                 break;
         }
-		//echo $url.'<br>';
+        //echo $url.'<br>';
         $curl_options[CURLOPT_URL] = $url;
-		$curl_options[CURLOPT_HEADER] = true;
+        $curl_options[CURLOPT_HEADER] = true;
 
         if (is_array($http_headers)) {
             $header = array();
@@ -1247,7 +1247,7 @@ class oauthApi
         curl_setopt_array($ch, $curl_options);
         // https handling
         if (!empty($this->certificate_file))
-		{
+        {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             curl_setopt($ch, CURLOPT_CAINFO, $this->certificate_file);
@@ -1257,72 +1257,72 @@ class oauthApi
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         }
         if (!empty($this->curl_options))
-		{
+        {
             curl_setopt_array($ch, $this->curl_options);
         }
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-		$this->errno	= curl_errno($ch);
-		$this->error	= curl_error($ch);
-		$header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
-		
-		//d($result,$http_code,$this->errno,$this->error,$content_type);
+        $this->errno    = curl_errno($ch);
+        $this->error    = curl_error($ch);
+        $header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
 
-		$this->usage['responce_code'] = $http_code;
-		$this->usage['content_type'] = $content_type;
+        //d($result,$http_code,$this->errno,$this->error,$content_type);
+
+        $this->usage['responce_code'] = $http_code;
+        $this->usage['content_type'] = $content_type;
 
         if ($this->errno)
-		{
-			$json_decode = json_decode(substr( $result, $header_size ), true);
-			$json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
-			$json_decode['http_code'] = '~'.$http_code;
-			$json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
-			curl_close($ch);
-			return $json_decode;
+        {
+            $json_decode = json_decode(substr( $result, $header_size ), true);
+            $json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
+            $json_decode['http_code'] = '~'.$http_code;
+            $json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
+            curl_close($ch);
+            return $json_decode;
         }
-		else
-		{
-			$header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
-			$json_decode = json_decode(substr( $result, $header_size ), true);
-			$json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
-			$json_decode['http_code'] = $http_code;
-			$json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
-			
+        else
+        {
+            $header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
+            $json_decode = json_decode(substr( $result, $header_size ), true);
+            $json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
+            $json_decode['http_code'] = $http_code;
+            $json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
+
         }
 
-		//if (isset($json_decode['status']) OR $json_decode['status'] == 'nok' OR 
-		if ( $json_decode['http_code'] != 200 && $json_decode['http_code'] != 304 )
-		{
-			$header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
-			$json_decode = json_decode(substr( $result, $header_size ), true);
-			$json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
-			$json_decode['http_code'] = $http_code;//curl_getinfo($ch,CURLINFO_HTTP_CODE);
-			$json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
-			
-		}
+        //if (isset($json_decode['status']) OR $json_decode['status'] == 'nok' OR
+        if ( $json_decode['http_code'] != 200 && $json_decode['http_code'] != 304 )
+        {
+            $header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
+            $json_decode = json_decode(substr( $result, $header_size ), true);
+            $json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
+            $json_decode['http_code'] = $http_code;//curl_getinfo($ch,CURLINFO_HTTP_CODE);
+            $json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
+
+        }
         curl_close($ch);
-		return (null === $json_decode) ? $result : $json_decode;
+        return (null === $json_decode) ? $result : $json_decode;
     }
 
-	public function get_headers_from_curl_response($response)
-	{
-		$headers = array();
+    public function get_headers_from_curl_response($response)
+    {
+        $headers = array();
 
-		$header_text = substr($response, 0, strpos($response, "\r\n\r\n"));
+        $header_text = substr($response, 0, strpos($response, "\r\n\r\n"));
 
-		foreach (explode("\r\n", $header_text) as $i => $line)
-			if ($i === 0)
-				$headers['http_code'] = $line;
-			else
-			{
-				list ($key, $value) = explode(': ', $line);
+        foreach (explode("\r\n", $header_text) as $i => $line)
+            if ($i === 0)
+                $headers['http_code'] = $line;
+            else
+            {
+                list ($key, $value) = explode(': ', $line);
 
-				$headers[$key] = $value;
-			}
+                $headers[$key] = $value;
+            }
 
-		return $headers;
-	}
+        return $headers;
+    }
     /**
      * Set the name of the parameter that carry the access token
      *
