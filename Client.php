@@ -1266,44 +1266,33 @@ class oauthApi
         $content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
         $this->errno    = curl_errno($ch);
         $this->error    = curl_error($ch);
-        $header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
 
-        //d($result,$http_code,$this->errno,$this->error,$content_type);
+        $header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
 
         $this->usage['responce_code'] = $http_code;
         $this->usage['content_type'] = $content_type;
 
+        $header = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
+        $result = substr($result, $header_size);
+        $effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+
+        curl_close($ch);
+
+        $json_decode = json_decode($result, true);
+        if (null === $json_decode) {
+            return $result;
+        }
+
+        $json_decode['header'] = $header;
+        $json_decode['http_code'] = $http_code;
+        $json_decode['last_url'] = $effective_url;
+
         if ($this->errno)
         {
-            $json_decode = json_decode(substr( $result, $header_size ), true);
-            $json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
-            $json_decode['http_code'] = '~'.$http_code;
-            $json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
-            curl_close($ch);
-            return $json_decode;
-        }
-        else
-        {
-            $header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
-            $json_decode = json_decode(substr( $result, $header_size ), true);
-            $json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
-            $json_decode['http_code'] = $http_code;
-            $json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
-
+            $json_decode['http_code'] = '~' . $json_decode['http_code'];
         }
 
-        //if (isset($json_decode['status']) OR $json_decode['status'] == 'nok' OR
-        if ( $json_decode['http_code'] != 200 && $json_decode['http_code'] != 304 )
-        {
-            $header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
-            $json_decode = json_decode(substr( $result, $header_size ), true);
-            $json_decode['header'] = $this->get_headers_from_curl_response(substr($result, 0, $header_size));
-            $json_decode['http_code'] = $http_code;//curl_getinfo($ch,CURLINFO_HTTP_CODE);
-            $json_decode['last_url'] = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
-
-        }
-        curl_close($ch);
-        return (null === $json_decode) ? $result : $json_decode;
+        return $json_decode;
     }
 
     public function get_headers_from_curl_response($response)
