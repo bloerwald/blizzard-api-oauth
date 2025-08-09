@@ -410,9 +410,7 @@ class oauthApi
         //set for translation
         $params['locale'] = $this->locale;
         if ($this->_request_namespace($path))
-        {
-            $params['namespace'] = $this->_request_namespace($path).'-'.$this->region;
-        }
+            $params['namespace'] = $this->_request_namespace($path).'-'.mb_strtolower($this->region, 'UTF-8');
         if ($path == 'account')
         {
             $url = $this->baseurl[$this->region]['ACCOUNT_ENDPOINT'];
