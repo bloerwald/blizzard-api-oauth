@@ -1258,6 +1258,9 @@ class oauthApi
         {
             curl_setopt_array($ch, $this->curl_options);
         }
+
+        curl_setopt($ch, CURLOPT_ACCEPT_ENCODING, '');
+
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
